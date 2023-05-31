@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cookie Clicker</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 100px;
+        }
+
+        #cookie {
+            width: 200px;
+            height: 200px;
+            background-color: brown;
+            border-radius: 50%;
+            display: inline-block;
+            margin-top: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #score {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        #cps {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        #reset {
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        #upgrades {
+            margin-top: 20px;
+        }
+
+        .upgrade {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            background-color: lightblue;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cookie Clicker</h1>
+    <div id="cookie"></div>
+    <div id="score">Score: 0</div>
+    <div id="cps">CPS: 0</div>
+    <div id="reset">Reset</div>
+    <div id="upgrades">
+        <div class="upgrade" id="upgrade1">Upgrade 1 (+1 point per click)</div>
+        <div class="upgrade" id="upgrade2">Upgrade 2 (+2 points per click)</div>
+        <div class="upgrade" id="upgrade3">Upgrade 3 (+3 points per click)</div>
+        <div class="upgrade" id="upgradeAutoClick">Auto Clicker (Clicks automatically)</div>
+    </div>
+
+    <script>
+        // Cookie click count
+        let score = 0;
+
+        // CPS (Clicks Per Second) count
+        let cps = 0;
+
+        // Upgrades
+        let clickValue = 1;
+        let autoClickerActive = false;
+        let autoClickerInterval;
+        let autoClickerPrice = 50;
+
+        // Get DOM elements
+        const cookie = document.getElementById('cookie');
+        const scoreDisplay = document.getElementById('score');
+        const cpsDisplay = document.getElementById('cps');
+        const resetButton = document.getElementById('reset');
+        const upgrade1 = document.getElementById('upgrade1');
+        const upgrade2 = document.getElementById('upgrade2');
+        const upgrade3 = document.getElementById('upgrade3');
+        const upgradeAutoClick = document.getElementById('upgradeAutoClick');
+
+        // Cookie click event handler
+        cookie.addEventListener('click', function () {
+            score += clickValue;
+            scoreDisplay.textContent = 'Score: ' + score;
+            cookie.classList.add('clicked');
+            setTimeout(function () {
+                cookie.classList.remove('clicked');
+            }, 200);
+        });
+
+        // Upgrade event handlers
+        upgrade1.addEventListener('click', function () {
+            if (score >= 10) {
+                clickValue += 1;
+                score -= 10;
+                scoreDisplay.textContent = 'Score: ' + score;
+            }
+        });
+
+        upgrade2.addEventListener('click', function () {
+            if (score >= 20) {
+                clickValue += 2;
+                score -= 20;
+                scoreDisplay.textContent = 'Score: ' + score;
+            }
+        });
+
+        upgrade3.addEventListener('click', function () {
+            if (score >= 30) {
+                clickValue += 3;
+                score -= 30;
+                scoreDisplay.textContent = 'Score: ' + score;
+            }
+        });
+
+        upgradeAutoClick.addEventListener('click', function () {
+            if (score >= autoClickerPrice && !autoClickerActive) {
+                autoClickerActive = true;
+                score -= autoClickerPrice;
+                scoreDisplay.textContent = 'Score: ' + score;
+                upgradeAutoClick.classList.add('disabled');
+                autoClickerInterval = setInterval(function () {
+                    cookie.click();
+                }, 1000);
+                autoClickerPrice *= 2;
+                upgradeAutoClick.textContent = `Auto Clicker (Clicks automatically) - Price: ${autoClickerPrice}`;
+            }
+        });
+
+        // CPS (Clicks Per Second) calculation
+        setInterval(function () {
+            cpsDisplay.textContent = 'CPS: ' + cps;
+            cps = 0;
+        }, 1000);
+
+        // Cookie click event handler for CPS
+        cookie.addEventListener('click', function () {
+            cps += clickValue;
+        });
+
+        // Reset button click event handler
+        resetButton.addEventListener('click', function () {
+            score = 0;
+            clickValue = 1;
+            scoreDisplay.textContent = 'Score: ' + score;
+            clearInterval(autoClickerInterval);
+            autoClickerActive = false;
+            upgradeAutoClick.classList.remove('disabled');
+            autoClickerPrice = 50;
+            upgradeAutoClick.textContent = `Auto Clicker (Clicks automatically) - Price: ${autoClickerPrice}`;
+        });
+    </script>
+</body>
+</html>
